@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "express": "^4.17.2",
+    "pg": "^8.7.1",
+    "standard": "^16.0.4"
+  },
+  "name": "crud-app",
+  "version": "1.0.0",
+  "description": "A simple app to help understand RESTful API design and best practices",
+  "main": "app.js",
+  "scripts": {
+    "test": "standard",
+    "fix": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronhmiller/crud-app.git"
+  },
+  "keywords": [
+    "CRUD",
+    "API",
+    "REST"
+  ],
+  "author": "Aaron Miller",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aaronhmiller/crud-app/issues"
+  },
+  "homepage": "https://github.com/aaronhmiller/crud-app#readme"
+}
