@@ -33,6 +33,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           file: ./app/Dockerfile
           context: ./app
-        env:
-          CLOUDFLARE_KEY: ${{ secrets.CLOUDFLARE_KEY }}
-          CLOUDFLARE_CERT: ${{ secrets.CLOUDFLARE_CERT }}
