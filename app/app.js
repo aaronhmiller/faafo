@@ -10,8 +10,8 @@ const api = require('./apis')
 const terminate = require('./terminate')
 
 const options = {
-  key: process.env.CLOUDFLARE_KEY,
-  cert: process.env.CLOUDFLARE_CERT
+  key: process.env.KEY,
+  cert: process.env.CERT
 }
 
 const httpServer = http.createServer(app)
