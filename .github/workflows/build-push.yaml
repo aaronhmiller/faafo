@@ -3,6 +3,8 @@ name: Docker Hub CI
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
