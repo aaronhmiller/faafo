@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/faafo:latest, ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.meta.outputs.tags }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/faafo:latest, ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.meta.outputs.images }}:${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
           file: ./app/Dockerfile
           context: ./app
