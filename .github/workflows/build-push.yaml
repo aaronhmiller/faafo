@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/faafo:latest, ${{ secrets.DOCKERHUB_USERNAME }}/faafo:${{ steps.meta.outputs.tags }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/faafo:latest, ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           
           platforms: linux/amd64,linux/arm64
