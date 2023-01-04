@@ -1,5 +1,5 @@
 # faafo
-A repo to mess around with and find things out
+A repo to mess around with and find things out ;)
 
 ## testing tagging & pushing to main
 Setup two github actions workflows to handle the following situations:
