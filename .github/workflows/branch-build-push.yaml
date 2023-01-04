@@ -1,4 +1,4 @@
-name: Docker Hub CI
+name: Branch Docker Hub CI
 
 on:
   push:
