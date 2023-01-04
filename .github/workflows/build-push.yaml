@@ -38,11 +38,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Untagged build and push
         uses: docker/build-push-action@v3
         with:
           file: ./app/Dockerfile
           context: ./app
           push: true
+          if: ${{ github.event.release.tag_name }} == ''
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          platforms: linux/amd64,linux/arm64
+      -
+        name: Tagged build and push
+        uses: docker/build-push-action@v3
+        with:
+          file: ./app/Dockerfile
+          context: ./app
+          push: true
+          if: "contains(github.event.release.tag_name, 'v')"
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
