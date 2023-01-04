@@ -54,6 +54,6 @@ jobs:
           file: ./app/Dockerfile
           context: ./app
           push: true
-          if: "contains(github.event.release.tag_name, 'v')"
+          if: ${{ github.event.release.tag_name }} != ''
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
