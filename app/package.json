@@ -2,6 +2,7 @@
   "dependencies": {
     "express": "^4.17.2",
     "pg": "^8.7.1",
+    "http-cache-semantics": "^4.1.1",
     "standard": "^16.0.4"
   },
   "name": "crud-app",
