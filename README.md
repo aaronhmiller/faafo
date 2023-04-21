@@ -8,5 +8,8 @@ Setup two github actions workflows to handle the following situations:
 2. Pushing a change to main branch
 
 ***
-2023/04/28
+2023/04/21
+Adding Docker Hub scanning & fixing release note dates
+
+2023/03/28
 Testing the github remote host change
