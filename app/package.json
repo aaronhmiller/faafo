@@ -2,7 +2,6 @@
   "dependencies": {
     "express": "^4.17.2",
     "pg": "^8.7.1",
-    "standard": "^16.0.4"
   },
   "name": "faafo",
   "version": "1.0.0",
