@@ -13,6 +13,13 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Run OX Security Scan to check for vulnerabilities
+        with:
+          ox_api_key: ${{ secrets.OX_API_KEY }}
+          ox_timeout: 1
+          ox_fail_on_timeout: true
+        uses: oxsecurity/ox-security-scan@main
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       -
