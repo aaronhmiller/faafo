@@ -13,6 +13,10 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Test
+        env: 
+          password: ${{ vars.MY_PASSWORD }}
+      -
         name: Run OX Security Scan to check for vulnerabilities
         with:
           ox_api_key: ${{ secrets.OX_API_KEY }}
