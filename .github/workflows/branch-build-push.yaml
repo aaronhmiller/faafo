@@ -16,6 +16,7 @@ jobs:
         name: Test
         env: 
           password: ${{ vars.MY_PASSWORD }}
+        run: echo "This is a test."
       -
         name: Run OX Security Scan to check for vulnerabilities
         with:
