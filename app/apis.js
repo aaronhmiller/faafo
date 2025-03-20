@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432
 })
 
-const email=foo@bar.com
+const email=foo@example.com
 
 const getUsers = (req, res) => {
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
