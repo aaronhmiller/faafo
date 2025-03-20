@@ -10,7 +10,6 @@ Setup two github actions workflows to handle the following situations:
 ***
 2025/03/19
 Testing tj-actions...againA
-email=foo@bar.com
 
 2023/04/21
 Adding Docker Hub scanning & fixing release note dates
