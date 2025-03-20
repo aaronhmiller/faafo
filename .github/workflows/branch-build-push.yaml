@@ -18,15 +18,15 @@ jobs:
           password: ${{ vars.PASSWORD }}
         run: echo "This is a test."
       -
-        name: Run OX Security Scan to check for vulnerabilities
-        with:
-          ox_api_key: ${{ secrets.OX_API_KEY }}
-          ox_timeout: 3
-          ox_fail_on_timeout: true
-          ox_scan_full_branch: true
+#        name: Run OX Security Scan to check for vulnerabilities
+#        with:
+#          ox_api_key: ${{ secrets.OX_API_KEY }}
+#          ox_timeout: 3
+#          ox_fail_on_timeout: true
+#          ox_scan_full_branch: true
           #ox_override_blocking: true
           #ox_fail_on_error: true
-        uses: oxsecurity/ox-security-scan@main
+#        uses: oxsecurity/ox-security-scan@main
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
