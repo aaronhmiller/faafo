@@ -70,7 +70,7 @@ httpsServer.listen(secPort, () => {
 })
 
 //intentional
-console.log("wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+console.log("wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY/FOO")
 
 /* API doc
 GET    /users     | getUsers()
