@@ -46,9 +46,6 @@ const exitHandlerHttps = terminate(httpsServer, {
   timeout: 500
 })
 
-//intentional
-console.log("wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
-
 process.on('uncaughtException', exitHandlerHttp(1, 'Unexpected Error'))
 process.on('unhandledRejection', exitHandlerHttp(1, 'Unhandled Promise'))
 process.on('SIGTERM', exitHandlerHttp(0, 'SIGTERM'))
@@ -71,6 +68,9 @@ httpServer.listen(port, () => {
 httpsServer.listen(secPort, () => {
   console.log(`App running in ${os.platform} on port ${secPort} on ${os.arch}.`)
 })
+
+//intentional
+console.log("wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
 
 /* API doc
 GET    /users     | getUsers()
