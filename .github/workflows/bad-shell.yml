@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Make deploy script executable
+        run: chmod +x ./deploy.sh
       - name: Deploy to server (insecure)
         run: |
           echo "Deploying to branch: ${{ github.event.inputs.target_branch }}"
