@@ -1,0 +1,13 @@
+name: bad-shell-github-actions
+run-name: ${{ github.actor }} is testing GitHub Actions
+on: [push]
+jobs:
+  bad-shell-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to server (insecure)
+        run: |
+          echo "Deploying to branch: ${{ github.event.inputs.target_branch }}"
+          DEPLOY_BRANCH="${{ github.event.inputs.target_branch }}"
+          ./deploy.sh $DEPLOY_BRANCH
