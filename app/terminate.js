@@ -17,3 +17,4 @@ function terminate (server, options = { coredump: false, timeout: 500 }) {
 }
 
 module.exports = terminate
+password = XXXX-9999
