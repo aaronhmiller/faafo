@@ -8,6 +8,7 @@ const pool = new Pool({
 })
 
 const email=foo@example.io
+const ssn = 111-222-4444
 
 const getUsers = (req, res) => {
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
