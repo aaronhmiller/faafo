@@ -12,7 +12,9 @@ const ssn = 303-23-4567
 const ssn2 = 895-12-3456
 const email2 = yo@yeet.com
 const API_KEY="kadfbvadfbvadfvad0fvhads0fv4"
-
+const secret_jwt_expired = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30'
+const secret_jwt_alive = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MjUxNjIzOTAyMn0.3jO1r3DsPkll6nuO3y3ep9n-aeKVBNDinCUtduqjTXE'
+  
 const getUsers = (req, res) => {
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
     if (error) {
