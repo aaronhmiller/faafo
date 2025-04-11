@@ -8,8 +8,8 @@ const pool = new Pool({
 })
 
 const email=foo@example.io
-const ssn = 101-23-4567
-const ssn2 = 890-12-3456
+const ssn = 303-23-4567
+const ssn2 = 895-12-3456
 const email2 = yo@yeet.com
 
 const getUsers = (req, res) => {
