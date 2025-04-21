@@ -1,4 +1,4 @@
-#comment to test
+#comment to test again
 name: bad-shell-github-actions
 run-name: ${{ github.actor }} is testing GitHub Actions
 on: [push]
