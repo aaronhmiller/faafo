@@ -23,3 +23,4 @@ again
 again2
 again3
 again4
+note: it seems you can only have one (verified but no sigstore) or the other (sigstore but unverified)
