@@ -18,10 +18,5 @@ Adding Docker Hub scanning & fixing release note dates
 Testing the github remote host change
 
 2025/09/07
-Testing signing
-again
-again2
-again3
-again4
 note: it seems you can only have one (verified but no sigstore) or the other (sigstore but unverified)
-again5: verifying note
+CONFIRMED
