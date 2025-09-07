@@ -20,3 +20,4 @@ Testing the github remote host change
 2025/09/07
 note: it seems you can only have one (verified but no sigstore) or the other (sigstore but unverified)
 CONFIRMED
+reconfirming...just to be sure
