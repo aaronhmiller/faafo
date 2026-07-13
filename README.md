@@ -1,3 +1,4 @@
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/aaronhmiller/faafo?utm_source=oss&utm_medium=github&utm_campaign=aaronhmiller%2Ffaafo&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 # faafo
 A repo to 'mess' around with and find things out (yeah, you know what i mean don't you?)
 
