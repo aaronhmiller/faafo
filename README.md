@@ -9,6 +9,9 @@ Setup two github actions workflows to handle the following situations:
 2. Pushing a change to main branch
 
 ***
+2026/09/16
+Testing CR TS config
+
 2026/07/25
 Testing CR review
 
