@@ -5,5 +5,6 @@ export default defineConfig({
   reviews: {
     profile: "chill",
     poem: true,
+    request_changes_workflow: true
   },
 })
