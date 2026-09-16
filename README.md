@@ -10,7 +10,8 @@ Setup two github actions workflows to handle the following situations:
 
 ***
 2026/09/16
-Testing CR TS config
+1. Testing CR TS config
+2. Adding poem back
 
 2026/07/25
 Testing CR review
