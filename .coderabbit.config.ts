@@ -4,6 +4,7 @@ export default defineConfig({
   language: "en-US",
   reviews: {
     profile: "chill",
-    poem: false,
+    poem: true,
+    request_changes_workflow: true
   },
 })
