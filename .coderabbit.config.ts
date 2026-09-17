@@ -1,0 +1,10 @@
+import { defineConfig } from "@coderabbitai/config"
+
+export default defineConfig({
+  language: "en-US",
+  reviews: {
+    profile: "chill",
+    poem: true,
+    request_changes_workflow: true
+  },
+})
