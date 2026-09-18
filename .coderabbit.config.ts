@@ -12,6 +12,12 @@ export default defineConfig({
          mode: "error",
          instructions: 
             "Fail if the diff contains an API key, token, password, or other secret."
+      },
+      {
+         name: "No exposed PII",
+         mode: "error",
+         instructions: 
+            "Fail if the diff contains any Personally Identifiable Information (PII)."
       }],
     },
   },
