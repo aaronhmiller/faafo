@@ -30,3 +30,14 @@ note: it seems you can only have one (verified but no sigstore) or the other (si
 CONFIRMED
 reconfirming...just to be sure
 another test
+
+## MCP server
+`mcp-server/` is a [Model Context Protocol](https://modelcontextprotocol.io) server (stdio transport) that exposes the users API as tools: `healthcheck`, `list_users`, `get_user`, `create_user`, `update_user`, `delete_user`.
+
+```sh
+cd mcp-server && npm install
+npm test                      # smoke test against a stubbed API
+FAAFO_BASE_URL=http://localhost:3000 npm start
+```
+
+`.mcp.json` at the repo root registers it for Claude Code, so opening this repo in Claude Code makes the tools available once the app is running (`docker compose up`).
