@@ -9,6 +9,14 @@ export async function openDatabase(path: string): Promise<DatabaseSync> {
   const db = new DatabaseSync(path);
   db.exec("PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL;");
   db.exec(schema);
+  migrate(db);
   seedMenu(db);
   return db;
+}
+
+function migrate(db: DatabaseSync): void {
+  const columns = db.prepare("PRAGMA table_info(menu_items)").all() as Array<{ name: string }>;
+  if (!columns.some(({ name }) => name === "dietary_flags")) {
+    db.exec("ALTER TABLE menu_items ADD COLUMN dietary_flags TEXT NOT NULL DEFAULT ''");
+  }
 }

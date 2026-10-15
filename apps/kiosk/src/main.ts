@@ -1,4 +1,4 @@
-import type { MenuCategory, MenuItem, Order } from "@verdant/contracts";
+import type { DietaryPreference, MenuCategory, MenuItem, Order, OrderMood, Recommendation } from "@verdant/contracts";
 import { api } from "./api.js";
 import { Cart } from "./cart.js";
 import "./styles.css";
@@ -8,6 +8,11 @@ let items: MenuItem[] = [];
 let category: MenuCategory | "all" = "all";
 let cart: Cart;
 let submitting = false;
+let recommending = false;
+let mood: OrderMood = "bright";
+let dietaryPreferences: DietaryPreference[] = [];
+let recommendations = new Map<string, Recommendation>();
+let recommendationSource: "ai" | "fallback" | undefined;
 
 boot();
 
@@ -41,6 +46,7 @@ function render(): void {
         <nav class="filters" aria-label="Menu categories">
           ${(["all", "coffee", "tea", "bakery"] as const).map((value) => `<button class="filter ${category === value ? "active" : ""}" data-category="${value}">${value === "all" ? "Everything" : title(value)}</button>`).join("")}
         </nav>
+        ${conciergeMarkup()}
         <div class="section-heading"><h2>${category === "all" ? "Today’s menu" : title(category)}</h2><span>${visible.length} things to love</span></div>
         <section class="menu-grid" aria-live="polite">
           ${visible.map(menuCard).join("")}
@@ -54,11 +60,26 @@ function render(): void {
 }
 
 function menuCard(item: MenuItem): string {
+  const recommendation = recommendations.get(item.id);
   return `<article class="menu-card" style="--accent:${item.accent}">
-    <div class="item-art" aria-hidden="true"><span>${item.icon}</span>${item.featured ? '<b>favorite</b>' : ""}</div>
+    <div class="item-art" aria-hidden="true"><span>${item.icon}</span>${recommendation ? '<b class="ai-pick">for you</b>' : item.featured ? '<b>favorite</b>' : ""}</div>
     <div class="item-copy"><span class="category">${item.category}</span><h3>${item.name}</h3><p>${item.description}</p></div>
+    ${recommendation ? `<p class="recommendation-reason">✦ ${recommendation.reason}</p>` : ""}
     <div class="item-action"><strong>${money(item.priceCents)}</strong><button data-add="${item.id}" aria-label="Add ${item.name}">+</button></div>
   </article>`;
+}
+
+function conciergeMarkup(): string {
+  const moodOptions: OrderMood[] = ["bright", "cozy", "focused", "adventurous"];
+  const dietOptions: DietaryPreference[] = ["dairy-free", "nut-free", "vegan"];
+  return `<section class="concierge" aria-labelledby="concierge-title">
+    <div class="concierge-intro"><span class="spark">✦</span><div><p class="eyebrow">Verdant guide</p><h2 id="concierge-title">What fits your moment?</h2><p>Tell our menu guide the vibe. It only recommends available items that match your filters.</p></div></div>
+    <div class="concierge-controls">
+      <div><span class="control-label">I’m feeling</span><div class="choice-row">${moodOptions.map((value) => `<button class="choice ${mood === value ? "selected" : ""}" data-mood="${value}">${title(value)}</button>`).join("")}</div></div>
+      <div><span class="control-label">Keep it</span><div class="choice-row">${dietOptions.map((value) => `<button class="choice ${dietaryPreferences.includes(value) ? "selected" : ""}" data-diet="${value}">${title(value)}</button>`).join("")}</div></div>
+    </div>
+    <div class="concierge-action"><button data-recommend ${recommending ? "disabled" : ""}>${recommending ? "Thinking…" : "Find my match"} <span>✦</span></button>${recommendationSource ? `<small>${recommendationSource === "ai" ? "AI-curated" : "House-curated fallback"} · Check ingredients with a barista for allergies.</small>` : ""}</div>
+  </section>`;
 }
 
 function cartMarkup(): string {
@@ -79,6 +100,28 @@ function bindEvents(): void {
   root.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => button.addEventListener("click", () => { cart.add(button.dataset.add!); render(); }));
   root.querySelectorAll<HTMLButtonElement>("[data-minus]").forEach((button) => button.addEventListener("click", () => { cart.decrement(button.dataset.minus!); render(); }));
   root.querySelector<HTMLButtonElement>(".checkout")?.addEventListener("click", placeOrder);
+  root.querySelectorAll<HTMLButtonElement>("[data-mood]").forEach((button) => button.addEventListener("click", () => { mood = button.dataset.mood as OrderMood; render(); }));
+  root.querySelectorAll<HTMLButtonElement>("[data-diet]").forEach((button) => button.addEventListener("click", () => {
+    const preference = button.dataset.diet as DietaryPreference;
+    dietaryPreferences = dietaryPreferences.includes(preference) ? dietaryPreferences.filter((value) => value !== preference) : [...dietaryPreferences, preference];
+    render();
+  }));
+  root.querySelector<HTMLButtonElement>("[data-recommend]")?.addEventListener("click", requestRecommendations);
+}
+
+async function requestRecommendations(): Promise<void> {
+  recommending = true;
+  render();
+  try {
+    const response = await api.recommendations({ mood, dietaryPreferences, cartItemIds: cart.lines.map(({ item }) => item.id) });
+    recommendations = new Map(response.recommendations.map((item) => [item.menuItemId, item]));
+    recommendationSource = response.source;
+  } catch (error) {
+    alert(error instanceof Error ? error.message : "The menu guide is unavailable.");
+  } finally {
+    recommending = false;
+    render();
+  }
 }
 
 async function placeOrder(): Promise<void> {
