@@ -1,32 +1,34 @@
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/aaronhmiller/faafo?utm_source=oss&utm_medium=github&utm_campaign=aaronhmiller%2Ffaafo&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
-# faafo
-A repo to 'mess' around with and find things out (yeah, you know what i mean don't you?)
+# Verdant Coffee Kiosk
 
-## testing tagging & pushing to main
-Setup two github actions workflows to handle the following situations:
+A touch-first, single-page menu and ordering experience for an in-store coffee kiosk. The repository is an npm workspace monorepo with a zero-framework TypeScript API, a SQLite database, shared contracts, and a Vite-powered frontend.
 
-1. Explicitly tagging a release
-2. Pushing a change to main branch
+## Workspace map
 
-***
-2026/09/16
-1. Testing CR TS config
-2. Adding poem back
+```text
+apps/api           HTTP API, application services, and SQLite adapter
+apps/kiosk         Touch-first single-page kiosk experience
+packages/contracts Shared API types and validation helpers
+docs               Architecture and operational notes
+```
 
-2026/07/25
-Testing CR review
+## Quick start
 
-2025/03/19
-Testing tj-actions...againB
+Requires Node.js 24 or newer.
 
-2023/04/21
-Adding Docker Hub scanning & fixing release note dates
+```bash
+npm install
+npm run dev:api
+npm run dev:kiosk
+```
 
-2023/03/28
-Testing the github remote host change
+Open `http://localhost:5173`. The API seeds `./data/verdant.db` and listens on `http://localhost:3001`.
 
-2025/09/07
-note: it seems you can only have one (verified but no sigstore) or the other (sigstore but unverified)
-CONFIRMED
-reconfirming...just to be sure
-another test
+## Quality gates
+
+```bash
+npm test
+npm run typecheck
+npm run build
+```
+
+See [docs/architecture.md](docs/architecture.md) for boundaries and extension points.

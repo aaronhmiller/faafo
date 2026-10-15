@@ -1,0 +1,17 @@
+{
+  "name": "@verdant/kiosk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "dev": "vite --host 0.0.0.0",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@verdant/contracts": "*"
+  },
+  "devDependencies": {
+    "vite": "^7.1.10"
+  }
+}
