@@ -20,6 +20,8 @@ Kiosk SPA -> HTTP routes -> Order service -> repositories -> SQLite
 - Add modifiers to contracts and persist them as immutable order-line snapshots.
 - Publish an `order.created` event from `OrderService` for kitchen display and receipt integrations.
 
+The optional menu concierge adds a governed AI boundary with deterministic fallback. See [AI concierge review guide](ai-concierge-review-guide.md) for its trust model and cross-layer review missions.
+
 ## Operational choices
 
 - Money is represented in integer cents.

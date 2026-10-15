@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS menu_items (
   price_cents INTEGER NOT NULL CHECK (price_cents >= 0),
   accent TEXT NOT NULL,
   icon TEXT NOT NULL,
+  dietary_flags TEXT NOT NULL DEFAULT '',
   featured INTEGER NOT NULL DEFAULT 0,
   available INTEGER NOT NULL DEFAULT 1
 );
@@ -23,4 +24,14 @@ CREATE TABLE IF NOT EXISTS order_lines (
   item_name TEXT NOT NULL,
   quantity INTEGER NOT NULL CHECK (quantity > 0),
   unit_price_cents INTEGER NOT NULL CHECK (unit_price_cents >= 0)
+);
+CREATE TABLE IF NOT EXISTS recommendation_events (
+  trace_id TEXT PRIMARY KEY,
+  source TEXT NOT NULL CHECK (source IN ('ai', 'fallback')),
+  mood TEXT NOT NULL,
+  dietary_flags TEXT NOT NULL,
+  candidate_count INTEGER NOT NULL,
+  result_ids TEXT NOT NULL,
+  latency_ms INTEGER NOT NULL,
+  created_at TEXT NOT NULL
 );`;

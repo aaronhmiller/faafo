@@ -11,6 +11,7 @@ export interface MenuItem {
   accent: string;
   icon: string;
   featured: boolean;
+  dietaryPreferences: DietaryPreference[];
 }
 
 export interface MenuResponse {
@@ -47,6 +48,29 @@ export interface ApiError {
   error: { code: string; message: string };
 }
 
+export const DIETARY_PREFERENCES = ["dairy-free", "nut-free", "vegan"] as const;
+export const ORDER_MOODS = ["bright", "cozy", "focused", "adventurous"] as const;
+export type DietaryPreference = (typeof DIETARY_PREFERENCES)[number];
+export type OrderMood = (typeof ORDER_MOODS)[number];
+
+export interface RecommendationRequest {
+  mood: OrderMood;
+  dietaryPreferences: DietaryPreference[];
+  cartItemIds: string[];
+}
+
+export interface Recommendation {
+  menuItemId: string;
+  reason: string;
+  confidence: number;
+}
+
+export interface RecommendationResponse {
+  recommendations: Recommendation[];
+  source: "ai" | "fallback";
+  traceId: string;
+}
+
 export function parseCreateOrder(value: unknown): CreateOrderRequest {
   if (!isRecord(value) || !Array.isArray(value.lines) || value.lines.length === 0 || value.lines.length > 20) {
     throw new Error("An order must contain between 1 and 20 lines.");
@@ -63,6 +87,23 @@ export function parseCreateOrder(value: unknown): CreateOrderRequest {
   });
 
   return { lines };
+}
+
+export function parseRecommendationRequest(value: unknown): RecommendationRequest {
+  if (!isRecord(value) || !ORDER_MOODS.includes(value.mood as OrderMood)) {
+    throw new Error("Choose a supported mood.");
+  }
+  if (!Array.isArray(value.dietaryPreferences) || value.dietaryPreferences.length > DIETARY_PREFERENCES.length || !value.dietaryPreferences.every((item) => DIETARY_PREFERENCES.includes(item as DietaryPreference))) {
+    throw new Error("Dietary preferences are invalid.");
+  }
+  if (!Array.isArray(value.cartItemIds) || value.cartItemIds.length > 20 || !value.cartItemIds.every((id) => typeof id === "string" && /^[a-z0-9-]{1,40}$/.test(id))) {
+    throw new Error("Cart item ids are invalid.");
+  }
+  return {
+    mood: value.mood as OrderMood,
+    dietaryPreferences: [...new Set(value.dietaryPreferences as DietaryPreference[])],
+    cartItemIds: [...new Set(value.cartItemIds as string[])]
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
