@@ -2,11 +2,13 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { MENU_CATEGORIES, parseCreateOrder, type ApiError, type MenuResponse } from "@verdant/contracts";
 import type { MenuRepository } from "../repositories/menu-repository.js";
 import { MenuItemUnavailableError, type OrderService } from "../services/order-service.js";
+import type { InsecureLoyaltyRoutes } from "../security-lab/insecure-loyalty-routes.js";
 
 interface Dependencies {
   menu: MenuRepository;
   orderService: OrderService;
   kioskOrigin: string;
+  securityLab: InsecureLoyaltyRoutes;
 }
 
 export function createHandler(dependencies: Dependencies) {
@@ -16,6 +18,7 @@ export function createHandler(dependencies: Dependencies) {
 
     const url = new URL(request.url ?? "/", "http://localhost");
     try {
+      if (await dependencies.securityLab.tryHandle(request, response, url)) return;
       if (request.method === "GET" && url.pathname === "/health") {
         return send(response, 200, { status: "ok" });
       }

@@ -23,4 +23,25 @@ CREATE TABLE IF NOT EXISTS order_lines (
   item_name TEXT NOT NULL,
   quantity INTEGER NOT NULL CHECK (quantity > 0),
   unit_price_cents INTEGER NOT NULL CHECK (unit_price_cents >= 0)
+);
+
+-- SECURITY REVIEW LAB: synthetic customer data for the intentionally vulnerable loyalty prototype.
+CREATE TABLE IF NOT EXISTS customers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  full_name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  birth_date TEXT NOT NULL,
+  home_address TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'customer',
+  loyalty_points INTEGER NOT NULL DEFAULT 0,
+  private_note TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  token TEXT PRIMARY KEY,
+  customer_id INTEGER NOT NULL REFERENCES customers(id),
+  role TEXT NOT NULL,
+  created_at TEXT NOT NULL
 );`;
