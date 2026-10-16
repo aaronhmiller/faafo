@@ -16,6 +16,7 @@ const server = createServer(createHandler({ menu, orderService: new OrderService
 
 server.listen(port, () => console.log(`Verdant API listening on http://localhost:${port}`));
 
+/** Stop accepting requests, close SQLite after pending requests finish, and exit. */
 function shutdown(): void {
   server.close(() => {
     db.close();
