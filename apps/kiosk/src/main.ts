@@ -1,6 +1,7 @@
 import type { MenuCategory, MenuItem, Order } from "@verdant/contracts";
 import { api } from "./api.js";
 import { Cart } from "./cart.js";
+import { signInAndRender } from "./security-lab/insecure-loyalty-client.js";
 import "./styles.css";
 
 const root = document.querySelector<HTMLDivElement>("#app")!;
@@ -31,7 +32,7 @@ function render(): void {
         <header class="topbar">
           <a class="brand" href="#" aria-label="Verdant Coffee home"><span class="brand-mark">V</span><span>Verdant<br><small>coffee house</small></span></a>
           <div class="welcome"><span>Good morning</span><strong>What can we make you?</strong></div>
-          <div class="open-badge"><i></i> Open · Pickup only</div>
+          <div class="top-actions"><div id="loyalty-status"></div><button class="loyalty-button">Loyalty sign in</button><div class="open-badge"><i></i> Open · Pickup only</div></div>
         </header>
         <section class="hero">
           <div><p class="eyebrow">A bright start, made slowly</p><h1>Find your<br><em>daily ritual.</em></h1></div>
@@ -79,6 +80,10 @@ function bindEvents(): void {
   root.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => button.addEventListener("click", () => { cart.add(button.dataset.add!); render(); }));
   root.querySelectorAll<HTMLButtonElement>("[data-minus]").forEach((button) => button.addEventListener("click", () => { cart.decrement(button.dataset.minus!); render(); }));
   root.querySelector<HTMLButtonElement>(".checkout")?.addEventListener("click", placeOrder);
+  root.querySelector<HTMLButtonElement>(".loyalty-button")?.addEventListener("click", async () => {
+    const target = root.querySelector<HTMLElement>("#loyalty-status");
+    if (target) await signInAndRender(target);
+  });
 }
 
 async function placeOrder(): Promise<void> {
