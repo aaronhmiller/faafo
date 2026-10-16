@@ -1,6 +1,7 @@
 import type { MenuCategory, MenuItem, Order } from "@verdant/contracts";
 import { api } from "./api.js";
 import { Cart } from "./cart.js";
+import { applyPreferences, loadPreferences, savePreferences, type KioskPreferences } from "./preferences.js";
 import "./styles.css";
 
 const root = document.querySelector<HTMLDivElement>("#app")!;
@@ -8,7 +9,9 @@ let items: MenuItem[] = [];
 let category: MenuCategory | "all" = "all";
 let cart: Cart;
 let submitting = false;
+let preferences = loadPreferences();
 
+applyPreferences(preferences);
 boot();
 
 /** Load the menu, initialize the cart, and show either the kiosk or a loading error. */
@@ -33,7 +36,7 @@ function render(): void {
         <header class="topbar">
           <a class="brand" href="#" aria-label="Verdant Coffee home"><span class="brand-mark">V</span><span>Verdant<br><small>coffee house</small></span></a>
           <div class="welcome"><span>Good morning</span><strong>What can we make you?</strong></div>
-          <div class="top-actions"><div class="open-badge"><i></i> Open · Pickup only</div></div>
+          <div class="top-actions"><div class="open-badge"><i></i> Open · Pickup only</div><button class="accessibility-button" aria-haspopup="dialog" aria-controls="preferences">Aa <span>Display</span></button></div>
         </header>
         <section class="hero">
           <div><p class="eyebrow">A bright start, made slowly</p><h1>Find your<br><em>daily ritual.</em></h1></div>
@@ -51,6 +54,8 @@ function render(): void {
       <aside class="cart-panel" aria-label="Your order">
         ${cartMarkup()}
       </aside>
+      ${preferencesMarkup()}
+      <div class="sr-status" role="status" aria-live="polite"></div>
     </main>`;
   bindEvents();
 }
@@ -81,9 +86,32 @@ function cartMarkup(): string {
 /** Attach category, quantity, and checkout actions to the rendered kiosk controls. */
 function bindEvents(): void {
   root.querySelectorAll<HTMLButtonElement>("[data-category]").forEach((button) => button.addEventListener("click", () => { category = button.dataset.category as typeof category; render(); }));
-  root.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => button.addEventListener("click", () => { cart.add(button.dataset.add!); render(); }));
+  root.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => button.addEventListener("click", () => {
+    cart.add(button.dataset.add!);
+    const item = items.find(({ id }) => id === button.dataset.add);
+    render();
+    const status = root.querySelector<HTMLElement>(".sr-status");
+    if (status) status.textContent = `${item?.name ?? "Item"} added. ${cart.count} items in your order.`;
+  }));
   root.querySelectorAll<HTMLButtonElement>("[data-minus]").forEach((button) => button.addEventListener("click", () => { cart.decrement(button.dataset.minus!); render(); }));
   root.querySelector<HTMLButtonElement>(".checkout")?.addEventListener("click", placeOrder);
+  root.querySelector<HTMLButtonElement>(".accessibility-button")?.addEventListener("click", () => root.querySelector<HTMLDialogElement>("#preferences")?.showModal());
+  root.querySelector<HTMLButtonElement>("[data-close-preferences]")?.addEventListener("click", () => root.querySelector<HTMLDialogElement>("#preferences")?.close());
+  root.querySelectorAll<HTMLInputElement>("[data-preference]").forEach((input) => input.addEventListener("change", () => {
+    preferences = { ...preferences, [input.dataset.preference!]: input.checked };
+    savePreferences(preferences);
+  }));
+}
+
+function preferencesMarkup(): string {
+  const toggle = (key: keyof KioskPreferences, label: string, detail: string) => `<label class="preference"><span><strong>${label}</strong><small>${detail}</small></span><input type="checkbox" data-preference="${key}" ${preferences[key] ? "checked" : ""}><i aria-hidden="true"></i></label>`;
+  return `<dialog id="preferences" class="preferences-dialog" aria-labelledby="preferences-title">
+    <div class="dialog-heading"><div><p class="eyebrow">Make it yours</p><h2 id="preferences-title">Display options</h2></div><button data-close-preferences aria-label="Close display options">×</button></div>
+    ${toggle("largeText", "Larger text", "Increase labels and menu descriptions")}
+    ${toggle("highContrast", "High contrast", "Strengthen colors and outlines")}
+    ${toggle("reducedMotion", "Reduce motion", "Remove movement and transitions")}
+    <p class="preference-note">These choices stay on this kiosk.</p>
+  </dialog>`;
 }
 
 /** Submit the cart and show confirmation, restoring checkout after a request failure. */
