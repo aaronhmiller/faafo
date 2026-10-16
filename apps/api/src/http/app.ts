@@ -2,23 +2,22 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { MENU_CATEGORIES, parseCreateOrder, type ApiError, type MenuResponse } from "@verdant/contracts";
 import type { MenuRepository } from "../repositories/menu-repository.js";
 import { MenuItemUnavailableError, type OrderService } from "../services/order-service.js";
-import type { InsecureLoyaltyRoutes } from "../security-lab/insecure-loyalty-routes.js";
 
 interface Dependencies {
   menu: MenuRepository;
   orderService: OrderService;
   kioskOrigin: string;
-  securityLab: InsecureLoyaltyRoutes;
 }
 
+/** Create an HTTP handler for health, menu, and order endpoints using the supplied dependencies. */
 export function createHandler(dependencies: Dependencies) {
+  /** Apply CORS, dispatch the request, and translate application errors into API responses. */
   return async function handler(request: IncomingMessage, response: ServerResponse): Promise<void> {
     setCorsHeaders(response, dependencies.kioskOrigin);
     if (request.method === "OPTIONS") return send(response, 204);
 
     const url = new URL(request.url ?? "/", "http://localhost");
     try {
-      if (await dependencies.securityLab.tryHandle(request, response, url)) return;
       if (request.method === "GET" && url.pathname === "/health") {
         return send(response, 200, { status: "ok" });
       }
@@ -42,6 +41,7 @@ export function createHandler(dependencies: Dependencies) {
   };
 }
 
+/** Parse a JSON request body, rejecting bodies larger than 32 KiB. */
 async function readJson(request: IncomingMessage): Promise<unknown> {
   const chunks: Buffer[] = [];
   let size = 0;
@@ -54,6 +54,7 @@ async function readJson(request: IncomingMessage): Promise<unknown> {
   return JSON.parse(Buffer.concat(chunks).toString("utf8"));
 }
 
+/** Set the allowed kiosk origin, methods, and headers on an API response. */
 function setCorsHeaders(response: ServerResponse, origin: string): void {
   response.setHeader("Access-Control-Allow-Origin", origin);
   response.setHeader("Access-Control-Allow-Headers", "content-type");
@@ -61,10 +62,12 @@ function setCorsHeaders(response: ServerResponse, origin: string): void {
   response.setHeader("Vary", "Origin");
 }
 
+/** Build the shared API error envelope from a code and public message. */
 function apiError(code: string, message: string): ApiError {
   return { error: { code, message } };
 }
 
+/** End the response with the given status and optional JSON payload. */
 function send(response: ServerResponse, status: number, payload?: unknown): void {
   response.statusCode = status;
   if (payload === undefined) {

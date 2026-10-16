@@ -47,6 +47,7 @@ export interface ApiError {
   error: { code: string; message: string };
 }
 
+/** Validate an unknown order payload and return bounded item identifiers and quantities; throw on invalid input. */
 export function parseCreateOrder(value: unknown): CreateOrderRequest {
   if (!isRecord(value) || !Array.isArray(value.lines) || value.lines.length === 0 || value.lines.length > 20) {
     throw new Error("An order must contain between 1 and 20 lines.");
@@ -65,6 +66,7 @@ export function parseCreateOrder(value: unknown): CreateOrderRequest {
   return { lines };
 }
 
+/** Narrow a value to a non-null object for boundary validation. */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }

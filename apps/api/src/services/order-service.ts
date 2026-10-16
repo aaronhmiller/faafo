@@ -6,6 +6,7 @@ import type { OrderRepository } from "../repositories/order-repository.js";
 export class MenuItemUnavailableError extends Error {}
 
 export class OrderService {
+  /** Configure repositories and optional clock and identifier providers for order creation. */
   constructor(
     private readonly menu: MenuRepository,
     private readonly orders: OrderRepository,
@@ -13,6 +14,7 @@ export class OrderService {
     private readonly createId: () => string = randomUUID
   ) {}
 
+  /** Merge duplicate items, snapshot current menu prices, and save the order; reject unavailable items. */
   create(input: CreateOrderRequest): Order {
     const quantityById = new Map<string, number>();
     for (const line of input.lines) {

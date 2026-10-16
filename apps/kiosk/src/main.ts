@@ -1,7 +1,6 @@
 import type { MenuCategory, MenuItem, Order } from "@verdant/contracts";
 import { api } from "./api.js";
 import { Cart } from "./cart.js";
-import { signInAndRender } from "./security-lab/insecure-loyalty-client.js";
 import "./styles.css";
 
 const root = document.querySelector<HTMLDivElement>("#app")!;
@@ -12,6 +11,7 @@ let submitting = false;
 
 boot();
 
+/** Load the menu, initialize the cart, and show either the kiosk or a loading error. */
 async function boot(): Promise<void> {
   renderLoading();
   try {
@@ -24,6 +24,7 @@ async function boot(): Promise<void> {
   }
 }
 
+/** Render the active menu category and cart, then attach their event handlers. */
 function render(): void {
   const visible = category === "all" ? items : items.filter((item) => item.category === category);
   root.innerHTML = `
@@ -32,7 +33,7 @@ function render(): void {
         <header class="topbar">
           <a class="brand" href="#" aria-label="Verdant Coffee home"><span class="brand-mark">V</span><span>Verdant<br><small>coffee house</small></span></a>
           <div class="welcome"><span>Good morning</span><strong>What can we make you?</strong></div>
-          <div class="top-actions"><div id="loyalty-status"></div><button class="loyalty-button">Loyalty sign in</button><div class="open-badge"><i></i> Open · Pickup only</div></div>
+          <div class="top-actions"><div class="open-badge"><i></i> Open · Pickup only</div></div>
         </header>
         <section class="hero">
           <div><p class="eyebrow">A bright start, made slowly</p><h1>Find your<br><em>daily ritual.</em></h1></div>
@@ -54,6 +55,7 @@ function render(): void {
   bindEvents();
 }
 
+/** Build the markup for a menu item with its display price and add button. */
 function menuCard(item: MenuItem): string {
   return `<article class="menu-card" style="--accent:${item.accent}">
     <div class="item-art" aria-hidden="true"><span>${item.icon}</span>${item.featured ? '<b>favorite</b>' : ""}</div>
@@ -62,6 +64,7 @@ function menuCard(item: MenuItem): string {
   </article>`;
 }
 
+/** Build the cart lines, subtotal, and checkout controls for the current state. */
 function cartMarkup(): string {
   const lines = cart.lines;
   return `<div class="cart-header"><div><span class="eyebrow">Your order</span><h2>A little joy<br>to go.</h2></div><span class="cart-count">${cart.count}</span></div>
@@ -75,17 +78,15 @@ function cartMarkup(): string {
     </div>`;
 }
 
+/** Attach category, quantity, and checkout actions to the rendered kiosk controls. */
 function bindEvents(): void {
   root.querySelectorAll<HTMLButtonElement>("[data-category]").forEach((button) => button.addEventListener("click", () => { category = button.dataset.category as typeof category; render(); }));
   root.querySelectorAll<HTMLButtonElement>("[data-add]").forEach((button) => button.addEventListener("click", () => { cart.add(button.dataset.add!); render(); }));
   root.querySelectorAll<HTMLButtonElement>("[data-minus]").forEach((button) => button.addEventListener("click", () => { cart.decrement(button.dataset.minus!); render(); }));
   root.querySelector<HTMLButtonElement>(".checkout")?.addEventListener("click", placeOrder);
-  root.querySelector<HTMLButtonElement>(".loyalty-button")?.addEventListener("click", async () => {
-    const target = root.querySelector<HTMLElement>("#loyalty-status");
-    if (target) await signInAndRender(target);
-  });
 }
 
+/** Submit the cart and show confirmation, restoring checkout after a request failure. */
 async function placeOrder(): Promise<void> {
   submitting = true;
   render();
@@ -99,12 +100,17 @@ async function placeOrder(): Promise<void> {
   }
 }
 
+/** Display the accepted order identifier and bind the action to start a fresh order. */
 function showConfirmation(order: Order): void {
   root.innerHTML = `<main class="confirmation"><div class="receipt-mark">✓</div><p class="eyebrow">Order received</p><h1>We’re making<br><em>something lovely.</em></h1><p>Your order number is</p><strong class="order-number">${order.id.slice(0, 6).toUpperCase()}</strong><p class="wait">Watch the pickup counter. We’ll call you when it’s ready.</p><button id="new-order">Start another order</button></main>`;
   root.querySelector("#new-order")?.addEventListener("click", () => { cart.clear(); submitting = false; category = "all"; render(); });
 }
 
+/** Display the loading state while the menu request is pending. */
 function renderLoading(): void { root.innerHTML = `<main class="state"><span class="loader"></span><h1>Warming up the bar…</h1></main>`; }
+/** Display a menu loading failure and a page reload action. */
 function renderError(message: string): void { root.innerHTML = `<main class="state"><span class="state-icon">☁</span><h1>We’ll be right back.</h1><p>${message}</p><button onclick="location.reload()">Try again</button></main>`; }
+/** Format integer cents as a US dollar display price. */
 function money(cents: number): string { return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(cents / 100); }
+/** Capitalize the first character of a category label. */
 function title(value: string): string { return value.charAt(0).toUpperCase() + value.slice(1); }
