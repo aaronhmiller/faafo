@@ -4,6 +4,7 @@ import { DatabaseSync } from "node:sqlite";
 import { schema } from "./schema.js";
 import { seedMenu } from "./seed.js";
 
+/** Open SQLite, apply the ordering schema, and seed missing menu items. */
 export async function openDatabase(path: string): Promise<DatabaseSync> {
   if (path !== ":memory:") await mkdir(dirname(path), { recursive: true });
   const db = new DatabaseSync(path);

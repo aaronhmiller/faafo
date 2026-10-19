@@ -2,6 +2,7 @@ import type { CreateOrderRequest, MenuResponse, Order, RecommendationRequest, Re
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
+/** Fetch JSON from the configured API and surface its public error message on failure. */
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init);
   const payload = await response.json() as T | { error?: { message?: string } };
@@ -13,6 +14,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  /** Fetch the available menu and category list. */
   menu: () => request<MenuResponse>("/api/menu"),
   recommendations: (body: RecommendationRequest) => request<RecommendationResponse>("/api/recommendations", {
     method: "POST",

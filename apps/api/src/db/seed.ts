@@ -10,6 +10,7 @@ const items = [
   ["pistachio-bun", "Pistachio Morning Bun", "Cardamom sugar and pistachio cream", "bakery", 550, "#8a9a5b", "◎", "", 1]
 ] as const;
 
+/** Insert the opening menu without overwriting existing menu items. */
 export function seedMenu(db: DatabaseSync): void {
   const insert = db.prepare(`
     INSERT INTO menu_items
