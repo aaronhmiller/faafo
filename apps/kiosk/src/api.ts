@@ -1,4 +1,4 @@
-import type { CreateOrderRequest, MenuResponse, Order } from "@verdant/contracts";
+import type { CreateOrderRequest, MenuResponse, Order, RecommendationRequest, RecommendationResponse } from "@verdant/contracts";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
@@ -16,7 +16,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   /** Fetch the available menu and category list. */
   menu: () => request<MenuResponse>("/api/menu"),
-  /** Submit item identifiers and quantities for authoritative pricing and order creation. */
+  recommendations: (body: RecommendationRequest) => request<RecommendationResponse>("/api/recommendations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  }),
   createOrder: (body: CreateOrderRequest) => request<Order>("/api/orders", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -13,7 +13,8 @@ const latte: MenuItem = {
   priceCents: 550,
   accent: "#fff",
   icon: "☕",
-  featured: true
+  featured: true,
+  dietaryPreferences: []
 };
 
 describe("OrderService", () => {
